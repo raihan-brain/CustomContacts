@@ -85,8 +85,6 @@ struct ContactsHandler {
         
         var arrayOfContact = [ContactModel]()
         
-        var header: Bool = true
-        
         for letter in letters {
             var demoContact = ContactModel(header: String(letter))
             demoContact.contacts = [CNContact]()

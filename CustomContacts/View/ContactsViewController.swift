@@ -15,6 +15,9 @@ class ContactsViewController: UITableViewController {
     var contactManager = ContactsHandler()
     var count: Int = 0
     var contacts = [ContactModel]()
+    var searchContact = [CNContact]()
+    var searchingContacts: Bool = false
+    
     @objc func handelShowIndex() {
         print("testing")
     }
@@ -22,11 +25,7 @@ class ContactsViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         if contactManager.authorizationStatus {
             contacts = contactManager.fetchContact()
-            
-            //            for contact in contacts {
-            //                print(contact)
-            //            }
-            
+            self.view.layoutIfNeeded()
             tableView.reloadData()
             
         } else {
@@ -42,8 +41,10 @@ class ContactsViewController: UITableViewController {
         
         let searchController = UISearchController(searchResultsController: nil)
         
+        searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
+        
         
         CNContactStore().requestAccess(for: .contacts) { (permission, error) in
             
@@ -55,6 +56,7 @@ class ContactsViewController: UITableViewController {
                 self.contacts = self.contactManager.fetchContact()
                 
                 DispatchQueue.main.async {
+                    self.view.layoutIfNeeded()
                     self.tableView.reloadData()
                 }
             } else {
@@ -75,42 +77,50 @@ class ContactsViewController: UITableViewController {
     
     // MARK: - Table view data source
     
-//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let label = UILabel()
-//        label.backgroundColor = .gray
-//        label.text = contacts[section].header
-//        return label
-//    }
-    
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if contacts[section].contacts?.count ?? 0  > 0 {
-            return contacts[section].header
+        
+        if searchingContacts {
+            return nil
+        } else {
+            if contacts[section].contacts?.count ?? 0  > 0 {
+                return contacts[section].header
+            }
         }
-        return nil
+        
+            return nil
     }
     
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return contacts.count
+        if searchingContacts {
+            return 1
+        } else {
+            return contacts.count
+        }
+        
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return contacts[section].contacts?.count ?? 0
+        if searchingContacts {
+            return searchContact.count
+        } else {
+            return contacts[section].contacts?.count ?? 0
+        }
     }
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "contactCell", for: indexPath)
         
-        if let customContact = contacts[indexPath.section].contacts?[indexPath.row] {
-            cell.textLabel?.text = customContact.givenName + " " + customContact.familyName
+        if searchingContacts {
+            cell.textLabel?.text = searchContact[indexPath.row].givenName
+        } else {
+            if let customContact = contacts[indexPath.section].contacts?[indexPath.row] {
+                cell.textLabel?.text = customContact.givenName + " " + customContact.familyName
+            }
         }
-        
-//        cell.textLabel?.text = contacts[indexPath.row].givenName + " " + contacts[indexPath.row].familyName
-        
-        // Configure the cell...
         
         return cell
     }
@@ -163,3 +173,45 @@ class ContactsViewController: UITableViewController {
     
 }
 
+
+extension ContactsViewController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if searchText.isEmpty {
+            self.searchingContacts = false
+            contacts = contactManager.fetchContact()
+            self.view.layoutIfNeeded()
+            tableView.reloadData()
+        } else {
+            self.searchContact.removeAll()
+            self.searchingContacts = true
+            contacts =  contacts.filter({ (contactsModel: ContactModel) -> Bool in
+                if let contacts = contactsModel.contacts {
+                    return contacts.filter { (contact: CNContact) -> Bool in
+                        if contact.givenName.contains(searchText) {
+                            print(contact.givenName)
+                            self.searchContact.append(contact)
+                        }
+                        return contact.givenName.contains(searchText)
+                    }.count > 0
+                }
+                return false
+            })
+            
+            DispatchQueue.main.async {
+                self.view.layoutIfNeeded()
+                self.tableView.reloadData()
+            }
+        }
+        
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.searchingContacts = false
+        contacts = contactManager.fetchContact()
+        self.view.layoutIfNeeded()
+        tableView.reloadData()
+    }
+    
+}
