@@ -99,4 +99,21 @@ struct ContactsHandler {
         return arrayOfContact
     }
     
+    
+    //MARK: - search for contacts
+    
+    public func searchContact(searchText: String) ->[CNContact] {
+        var searchContacts = [CNContact]()
+        let contactStore: CNContactStore = CNContactStore()
+        let predicate: NSPredicate = CNContact.predicateForContacts(matchingName: searchText)
+        
+        do {
+            searchContacts = try contactStore.unifiedContacts(matching: predicate, keysToFetch: [CNContactVCardSerialization.descriptorForRequiredKeys()])
+        } catch let error as NSError{
+            print("error while searching \(error)")
+        }
+        
+        return searchContacts
+    }
+    
 }

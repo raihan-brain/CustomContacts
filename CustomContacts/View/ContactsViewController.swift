@@ -115,7 +115,7 @@ class ContactsViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "contactCell", for: indexPath)
         
         if searchingContacts {
-            cell.textLabel?.text = searchContact[indexPath.row].givenName
+            cell.textLabel?.text = searchContact[indexPath.row].givenName + " " + searchContact[indexPath.row].familyName
         } else {
             if let customContact = contacts[indexPath.section].contacts?[indexPath.row] {
                 cell.textLabel?.text = customContact.givenName + " " + customContact.familyName
@@ -186,18 +186,19 @@ extension ContactsViewController: UISearchBarDelegate {
         } else {
             self.searchContact.removeAll()
             self.searchingContacts = true
-            contacts =  contacts.filter({ (contactsModel: ContactModel) -> Bool in
-                if let contacts = contactsModel.contacts {
-                    return contacts.filter { (contact: CNContact) -> Bool in
-                        if contact.givenName.contains(searchText) {
-                            print(contact.givenName)
-                            self.searchContact.append(contact)
-                        }
-                        return contact.givenName.contains(searchText)
-                    }.count > 0
-                }
-                return false
-            })
+//            contacts =  contacts.filter({ (contactsModel: ContactModel) -> Bool in
+//                if let contacts = contactsModel.contacts {
+//                    return contacts.filter { (contact: CNContact) -> Bool in
+//                        if contact.givenName.contains(searchText) {
+//                            print(contact.givenName)
+//                            self.searchContact.append(contact)
+//                        }
+//                        return contact.givenName.contains(searchText)
+//                    }.count > 0
+//                }
+//                return false
+//            })
+            self.searchContact = contactManager.searchContact(searchText: searchText)
             
             DispatchQueue.main.async {
                 self.view.layoutIfNeeded()
