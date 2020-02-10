@@ -15,6 +15,7 @@
 		BD7C044E23E7F8EA00A2EC89 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD7C044C23E7F8EA00A2EC89 /* LaunchScreen.storyboard */; };
 		BD8EB4A023E7FD71006B83E5 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8EB49F23E7FD71006B83E5 /* ContactsViewController.swift */; };
 		BDD5F2AA23ED7975005D8156 /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD5F2A923ED7975005D8156 /* ContactModel.swift */; };
+		EB5465AA23F1CCC60074C0D0 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5465A923F1CCC60074C0D0 /* ProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		BD7C044F23E7F8EA00A2EC89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BD8EB49F23E7FD71006B83E5 /* ContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContactsViewController.swift; path = CustomContacts/View/ContactsViewController.swift; sourceTree = SOURCE_ROOT; };
 		BDD5F2A923ED7975005D8156 /* ContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactModel.swift; sourceTree = "<group>"; };
+		EB5465A923F1CCC60074C0D0 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProfileViewController.swift; path = CustomContacts/View/ProfileViewController.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +86,7 @@
 		BD7C045523E7FBD900A2EC89 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				EB5465A923F1CCC60074C0D0 /* ProfileViewController.swift */,
 				BD8EB49F23E7FD71006B83E5 /* ContactsViewController.swift */,
 			);
 			path = Controller;
@@ -168,6 +171,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB5465AA23F1CCC60074C0D0 /* ProfileViewController.swift in Sources */,
 				BD8EB4A023E7FD71006B83E5 /* ContactsViewController.swift in Sources */,
 				BD19D26B23E98E1900C3190C /* ContactsHandler.swift in Sources */,
 				BD7C044223E7F8E700A2EC89 /* AppDelegate.swift in Sources */,

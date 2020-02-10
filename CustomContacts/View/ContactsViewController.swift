@@ -87,7 +87,7 @@ class ContactsViewController: UITableViewController {
             }
         }
         
-            return nil
+        return nil
     }
     
     
@@ -125,6 +125,13 @@ class ContactsViewController: UITableViewController {
         return cell
     }
     
+    //MARK: - Table interaction
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "contactProfile", sender: self)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    
     
     /*
      // Override to support conditional editing of the table view.
@@ -161,15 +168,23 @@ class ContactsViewController: UITableViewController {
      }
      */
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
+    
+    // MARK: - Navigation
+    
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "contactProfile" {
+            let destinationVC = segue.destination as! ProfileViewController
+            
+            if let indexPath = tableView.indexPathForSelectedRow {
+                if let contact = contacts[indexPath.section].contacts?[indexPath.row] {
+                    destinationVC.selectedContact = contact
+                }
+            }
+        }
+    }
+    
     
 }
 
@@ -186,18 +201,6 @@ extension ContactsViewController: UISearchBarDelegate {
         } else {
             self.searchContact.removeAll()
             self.searchingContacts = true
-//            contacts =  contacts.filter({ (contactsModel: ContactModel) -> Bool in
-//                if let contacts = contactsModel.contacts {
-//                    return contacts.filter { (contact: CNContact) -> Bool in
-//                        if contact.givenName.contains(searchText) {
-//                            print(contact.givenName)
-//                            self.searchContact.append(contact)
-//                        }
-//                        return contact.givenName.contains(searchText)
-//                    }.count > 0
-//                }
-//                return false
-//            })
             self.searchContact = contactManager.searchContact(searchText: searchText)
             
             DispatchQueue.main.async {
