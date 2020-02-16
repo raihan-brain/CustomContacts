@@ -8,6 +8,7 @@
 
 import Foundation
 import Contacts
+import ContactsUI
 
 struct ContactsHandler {
     
@@ -53,7 +54,7 @@ struct ContactsHandler {
         let contactManager: CNContactStore = CNContactStore()
         var contacts: [CNContact] = [CNContact]()
         
-        let fetchRequest: CNContactFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactVCardSerialization.descriptorForRequiredKeys()])
+        let fetchRequest: CNContactFetchRequest = CNContactFetchRequest(keysToFetch: [CNContactVCardSerialization.descriptorForRequiredKeys(), CNContactViewController.descriptorForRequiredKeys()])
         fetchRequest.sortOrder = CNContactSortOrder.givenName
         
         do {
@@ -108,7 +109,7 @@ struct ContactsHandler {
         let predicate: NSPredicate = CNContact.predicateForContacts(matchingName: searchText)
         
         do {
-            searchContacts = try contactStore.unifiedContacts(matching: predicate, keysToFetch: [CNContactVCardSerialization.descriptorForRequiredKeys()])
+            searchContacts = try contactStore.unifiedContacts(matching: predicate, keysToFetch: [CNContactVCardSerialization.descriptorForRequiredKeys(), CNContactViewController.descriptorForRequiredKeys()])
         } catch let error as NSError{
             print("error while searching \(error)")
         }

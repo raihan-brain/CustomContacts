@@ -17,6 +17,7 @@ class ContactsViewController: UITableViewController {
     var contacts = [ContactModel]()
     var searchContact = [CNContact]()
     var searchingContacts: Bool = false
+    let searchController = UISearchController(searchResultsController: nil)
     
     @objc func handelShowIndex() {
         print("testing")
@@ -38,8 +39,6 @@ class ContactsViewController: UITableViewController {
         super.viewDidLoad()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Show IndexPath", style: .plain, target: self, action: #selector(handelShowIndex))
-        
-        let searchController = UISearchController(searchResultsController: nil)
         
         searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
@@ -124,11 +123,36 @@ class ContactsViewController: UITableViewController {
         
         return cell
     }
-    
+
     //MARK: - Table interaction
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "contactProfile", sender: self)
-        tableView.deselectRow(at: indexPath, animated: true)
+        self.searchController.obscuresBackgroundDuringPresentation = false
+        //        performSegue(withIdentifier: "contactProfile", sender: self)
+        if let indexPath = tableView.indexPathForSelectedRow {
+            if searchingContacts {
+                
+                let contactViewController = CNContactViewController(for: searchContact[indexPath.row])
+                contactViewController.hidesBottomBarWhenPushed = true
+                contactViewController.allowsEditing = true
+                contactViewController.allowsActions = false
+                // 3
+                navigationController?.pushViewController(contactViewController, animated: true)
+                
+            } else {
+                if let contact = contacts[indexPath.section].contacts?[indexPath.row] {
+                    let contactViewController = CNContactViewController(for: contact)
+                    contactViewController.hidesBottomBarWhenPushed = true
+                    contactViewController.allowsEditing = true
+                    contactViewController.allowsActions = false
+                    // 3
+                    navigationController?.pushViewController(contactViewController, animated: true)
+                }
+            }
+            
+        }
+        
+        
+//        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     
@@ -172,18 +196,18 @@ class ContactsViewController: UITableViewController {
     // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == "contactProfile" {
-            let destinationVC = segue.destination as! ProfileViewController
-            
-            if let indexPath = tableView.indexPathForSelectedRow {
-                if let contact = contacts[indexPath.section].contacts?[indexPath.row] {
-                    destinationVC.selectedContact = contact
-                }
-            }
-        }
-    }
+    //    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    //
+    //        if segue.identifier == "contactProfile" {
+    //            let destinationVC = segue.destination as! ProfileViewController
+    //
+    //            if let indexPath = tableView.indexPathForSelectedRow {
+    //                if let contact = contacts[indexPath.section].contacts?[indexPath.row] {
+    //                    destinationVC.selectedContact = contact
+    //                }
+    //            }
+    //        }
+    //    }
     
     
 }
